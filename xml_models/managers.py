@@ -2,6 +2,7 @@ from __future__ import absolute_import
 import xml_models.rest_client as rest_client
 from lxml import etree
 from xml_models.xpath_finder import MultipleNodesReturnedException
+from StringIO import StringIO
 
 
 class ModelManager(object):
@@ -142,7 +143,13 @@ class ModelQuery(object):
             return
 
         node_to_find = getattr(self.model, 'collection_node', None)
-        tree = etree.iterparse(xml, ['start', 'end'])
+        if isinstance(xml, basestring):
+            xml_file = StringIO()
+            xml_file.write(xml)
+            xml_file.seek(0)
+            tree = etree.iterparse(xml_file, ['start', 'end'])
+        else:
+            tree = etree.iterparse(xml, ['start', 'end'])
 
         _, child = next(tree)
 
