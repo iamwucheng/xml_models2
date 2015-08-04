@@ -295,7 +295,8 @@ class Model(with_metaclass(ModelBase)):
         xpath = "/".join(parts[:-1])  # I think it is safe to assume attributes are in the last place
         attr = parts[-1].replace('@', '')
 
-        self._get_tree().xpath(xpath)[0].attrib[attr] = str(getattr(self, field._name))
+        if attr in self._get_tree().xpath(xpath)[0].attrib:
+            self._get_tree().xpath(xpath)[0].attrib[attr] = str(getattr(self, field._name))
 
     def _update_subtree(self, field):
         """
@@ -385,7 +386,9 @@ class Model(with_metaclass(ModelBase)):
         elif isinstance(field, OneToOneField):
             self._update_subtree(field)
         else:
-            self._get_tree().xpath(field.xpath)[0].text = str(getattr(self, field._name))
+            simple_node = self._get_tree().xpath(field.xpath)
+            if simple_node is not None and len(simple_node) > 0:
+                self._get_tree().xpath(field.xpath)[0].text = str(getattr(self, field._name))
 
     def _get_tree(self):
         if self._dom is None:
