@@ -144,9 +144,7 @@ class ModelQuery(object):
 
         node_to_find = getattr(self.model, 'collection_node', None)
         if isinstance(xml, basestring):
-            xml_file = StringIO()
-            xml_file.write(xml)
-            xml_file.seek(0)
+            xml_file = StringIO(xml.encode())
             tree = etree.iterparse(xml_file, ['start', 'end'])
         else:
             tree = etree.iterparse(xml, ['start', 'end'])
