@@ -1,18 +1,18 @@
 import unittest
-from xml_models.xpath_finder import MultipleNodesReturnedException
+from xml_models2.xpath_finder import MultipleNodesReturnedException
 
 try:
     from StringIO import StringIO
 except ImportError:
     from io import BytesIO as StringIO
 from mock import patch
-import xml_models
-from xml_models.managers import ModelQuery, NoRegisteredFinderError, DoesNotExist
-from xml_models.rest_client import rest_client
+import xml_models2
+from xml_models2.managers import ModelQuery, NoRegisteredFinderError, DoesNotExist
+from xml_models2.rest_client import rest_client
 
 
-class SimpleModel(xml_models.Model):
-    field1 = xml_models.CharField(xpath='/root/field1')
+class SimpleModel(xml_models2.Model):
+    field1 = xml_models2.CharField(xpath='/root/field1')
 
     finders = {
         (field1,): "http://foo.com/simple/%s",
@@ -23,8 +23,8 @@ class SimpleModel(xml_models.Model):
     headers = {'user': 'user1', 'password': 'pwd1'}
 
 
-class NestedModel(xml_models.Model):
-    field1 = xml_models.CharField(xpath='/root/field1')
+class NestedModel(xml_models2.Model):
+    field1 = xml_models2.CharField(xpath='/root/field1')
     collection_node = 'elems'
     finders = {
         (field1,): "http://foo.com/simple/%s",

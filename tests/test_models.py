@@ -1,30 +1,30 @@
 import unittest
 from mock import Mock
-import xml_models
+import xml_models2
 
 
-class Muppet(xml_models.Model):
-    name = xml_models.CharField(xpath='/root/kiddie/value')
-    friends = xml_models.CollectionField(xml_models.CharField, xpath='/root/kiddie/friends/friend')
+class Muppet(xml_models2.Model):
+    name = xml_models2.CharField(xpath='/root/kiddie/value')
+    friends = xml_models2.CollectionField(xml_models2.CharField, xpath='/root/kiddie/friends/friend')
 
     finders = {
         (name,): "http://foo.com/muppets/%s"
     }
 
 
-class CollectionModel(xml_models.Model):
-    names = xml_models.CollectionField(xml_models.CharField, xpath='/root/names/name')
+class CollectionModel(xml_models2.Model):
+    names = xml_models2.CollectionField(xml_models2.CharField, xpath='/root/names/name')
 
-class ModelB(xml_models.Model):
-            name = xml_models.CharField(xpath='/modelb/name')
+class ModelB(xml_models2.Model):
+            name = xml_models2.CharField(xpath='/modelb/name')
 
-class ModelA(xml_models.Model):
-    name = xml_models.CharField(xpath='/root/name')
-    modelb = xml_models.OneToOneField(ModelB, xpath='/root/modelb')
+class ModelA(xml_models2.Model):
+    name = xml_models2.CharField(xpath='/root/name')
+    modelb = xml_models2.OneToOneField(ModelB, xpath='/root/modelb')
 
-class ModelC(xml_models.Model):
-    name = xml_models.CharField(xpath='/root/name')
-    modelb = xml_models.CollectionField(ModelB, xpath='/root/modelbs/modelb')
+class ModelC(xml_models2.Model):
+    name = xml_models2.CharField(xpath='/root/name')
+    modelb = xml_models2.CollectionField(ModelB, xpath='/root/modelbs/modelb')
 
 
 class BaseModelTestCases(unittest.TestCase):
@@ -85,8 +85,8 @@ class BaseModelTestCases(unittest.TestCase):
     </root>""") + "\n")
 
     def test_can_get_altered_attributes_xml_back_out(self):
-        class AttrModel(xml_models.Model):
-            field1 = xml_models.IntField(xpath='/root/child/value/@count')
+        class AttrModel(xml_models2.Model):
+            field1 = xml_models2.IntField(xpath='/root/child/value/@count')
 
         m = AttrModel('<root><child><value count="1">Fred</value></child></root>')
         m.field1 = 2

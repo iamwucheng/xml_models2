@@ -1,15 +1,15 @@
 from __future__ import absolute_import
 
 import datetime
-from xml_models import xpath_finder
-from xml_models.managers import ModelManager
+from xml_models2 import xpath_finder
+from xml_models2.managers import ModelManager
 from dateutil.parser import parse as date_parser
 from lxml import etree
 
 
 # pylint: disable=too-few-public-methods
 # Fields only need one public method
-from xml_models.xpath_finder import MultipleNodesReturnedException
+from xml_models2.xpath_finder import MultipleNodesReturnedException
 
 
 class BaseField:

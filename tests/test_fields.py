@@ -1,5 +1,5 @@
 import unittest
-import xml_models
+import xml_models2
 from mock import patch
 try:
     from StringIO import StringIO
@@ -7,7 +7,7 @@ except ImportError:
     from io import StringIO
 from lxml import objectify
 import datetime
-from xml_models.xpath_finder import MultipleNodesReturnedException
+from xml_models2.xpath_finder import MultipleNodesReturnedException
 
 XML = objectify.fromstring("""
     <root>
@@ -26,105 +26,105 @@ XML = objectify.fromstring("""
 class BaseFieldTests(unittest.TestCase):
     def test_raises_when_xpath_is_missing(self):
         with self.assertRaises(Exception):
-            xml_models.BaseField()
+            xml_models2.BaseField()
 
     def test_can_read_from_innertext(self):
-        field = xml_models.BaseField(xpath='/root/kiddie/char')
+        field = xml_models2.BaseField(xpath='/root/kiddie/char')
         response = field._fetch_by_xpath(XML, None)
         self.assertEquals('Muppets rock', response)
 
     def test_can_read_from_attribute(self):
-        field = xml_models.BaseField(xpath='/root/kiddie/char/@comment')
+        field = xml_models2.BaseField(xpath='/root/kiddie/char/@comment')
         response = field._fetch_by_xpath(XML, None)
         self.assertEquals('Nice', response)
 
     def test_returns_default_when_value_is_empty(self):
-        field = xml_models.BaseField(xpath='/root/kiddie/empty', default='DEFAULT')
+        field = xml_models2.BaseField(xpath='/root/kiddie/empty', default='DEFAULT')
         response = field._fetch_by_xpath(XML, None)
         self.assertEquals('DEFAULT', response)
 
     def test_returns_none_when_value_is_empty_and_no_deafult(self):
-        field = xml_models.BaseField(xpath='/root/kiddie/empty')
+        field = xml_models2.BaseField(xpath='/root/kiddie/empty')
         response = field._fetch_by_xpath(XML, None)
         self.assertEquals(None, response)
 
 
 class CharFieldTests(unittest.TestCase):
-    @patch.object(xml_models.BaseField, '_fetch_by_xpath')
+    @patch.object(xml_models2.BaseField, '_fetch_by_xpath')
     def test_uses_base(self, mock_base):
-        field = xml_models.CharField(xpath='/root/kiddie/char')
+        field = xml_models2.CharField(xpath='/root/kiddie/char')
         response = field.parse(XML, None)
 
         mock_base.assert_called_once
 
 
 class IntFieldTests(unittest.TestCase):
-    @patch.object(xml_models.BaseField, '_fetch_by_xpath')
+    @patch.object(xml_models2.BaseField, '_fetch_by_xpath')
     def test_uses_base(self, mock_base):
-        field = xml_models.CharField(xpath='/root/kiddie/int')
+        field = xml_models2.CharField(xpath='/root/kiddie/int')
         response = field.parse(XML, None)
 
         mock_base.assert_called_once
 
     def test_casts_to_int(self):
-        field = xml_models.IntField(xpath='/root/kiddie/int')
+        field = xml_models2.IntField(xpath='/root/kiddie/int')
         response = field.parse(XML, None)
         self.assertEquals(11, response)
 
     def test_raises_error_if_not_an_int(self):
         with self.assertRaises(ValueError):
-            field = xml_models.IntField(xpath='/root/kiddie/char')
+            field = xml_models2.IntField(xpath='/root/kiddie/char')
             response = field.parse(XML, None)
 
     def test_may_have_a_default(self):
-        field = xml_models.CharField(xpath='/root/kiddie/int2', default=-1)
+        field = xml_models2.CharField(xpath='/root/kiddie/int2', default=-1)
         response = field.parse(XML, None)
         self.assertEquals(-1, response)
 
 
 class FloatFieldTests(unittest.TestCase):
-    @patch.object(xml_models.BaseField, '_fetch_by_xpath')
+    @patch.object(xml_models2.BaseField, '_fetch_by_xpath')
     def test_uses_base(self, mock_base):
-        field = xml_models.FloatField(xpath='/root/kiddie/int')
+        field = xml_models2.FloatField(xpath='/root/kiddie/int')
         response = field.parse(XML, None)
 
         mock_base.assert_called_once
 
     def test_casts_to_int(self):
-        field = xml_models.FloatField(xpath='/root/kiddie/float')
+        field = xml_models2.FloatField(xpath='/root/kiddie/float')
         response = field.parse(XML, None)
         self.assertEquals(11.11, response)
 
     def test_raises_error_if_not_an_int(self):
         with self.assertRaises(ValueError):
-            field = xml_models.FloatField(xpath='/root/kiddie/char')
+            field = xml_models2.FloatField(xpath='/root/kiddie/char')
             response = field.parse(XML, None)
 
 
 class BoolFieldTests(unittest.TestCase):
-    @patch.object(xml_models.BaseField, '_fetch_by_xpath')
+    @patch.object(xml_models2.BaseField, '_fetch_by_xpath')
     def test_uses_base(self, mock_base):
-        field = xml_models.BoolField(xpath='/root/kiddie/bools/@many')
+        field = xml_models2.BoolField(xpath='/root/kiddie/bools/@many')
         response = field.parse(XML, None)
 
         mock_base.assert_called_once
 
     def test_can_cast_trues(self):
-        field = xml_models.BoolField(xpath='/root/kiddie/bools/@many')
+        field = xml_models2.BoolField(xpath='/root/kiddie/bools/@many')
         response = field.parse(XML, None)
         self.assertTrue(response)
 
     def test_can_cast_false(self):
-        field = xml_models.BoolField(xpath='/root/kiddie/bools/bool')
+        field = xml_models2.BoolField(xpath='/root/kiddie/bools/bool')
         response = field.parse(XML, None)
         self.assertFalse(response)
 
 
 class DateFieldTests(unittest.TestCase):
-    @patch.object(xml_models.BaseField, '_fetch_by_xpath')
+    @patch.object(xml_models2.BaseField, '_fetch_by_xpath')
     def test_uses_base(self, mock_base):
         mock_base.return_value = None
-        field = xml_models.DateField(xpath='/root/kiddie/bools/@many')
+        field = xml_models2.DateField(xpath='/root/kiddie/bools/@many')
         response = field.parse(XML, None)
 
         mock_base.assert_called_once
@@ -132,7 +132,7 @@ class DateFieldTests(unittest.TestCase):
     def test_parses_basic_format(self):
         xml_string = '<root><kiddie><value>2008-06-21T10:36:12</value></kiddie></root>'
         xml = objectify.fromstring(xml_string)
-        field = xml_models.DateField(xpath='/root/kiddie/value')
+        field = xml_models2.DateField(xpath='/root/kiddie/value')
         response = field.parse(xml, None)
         date = datetime.datetime(2008, 6, 21, 10, 36, 12)
         self.assertEquals(date, response)
@@ -142,7 +142,7 @@ class DateFieldTests(unittest.TestCase):
 
         xml_string = '<root><kiddie><value>2008-06-21T10:36:12-06:00</value></kiddie></root>'
         xml = objectify.fromstring(xml_string)
-        field = xml_models.DateField(xpath='/root/kiddie/value')
+        field = xml_models2.DateField(xpath='/root/kiddie/value')
         response = field.parse(xml, None)
         date = pytz.UTC.localize(datetime.datetime(2008, 6, 21, 16, 36, 12))
         self.assertEquals(date, response)
@@ -150,27 +150,27 @@ class DateFieldTests(unittest.TestCase):
     def test_returns_none_when_the_node_is_empty(self):
         xml_string = '<root><kiddie><value></value></kiddie></root>'
         xml = objectify.fromstring(xml_string)
-        field = xml_models.DateField(xpath='/root/kiddie/value')
+        field = xml_models2.DateField(xpath='/root/kiddie/value')
         response = field.parse(xml, None)
         self.assertEquals(None, response)
 
     def test_allows_custom_date_fromat(self):
         xml_string = '<root><kiddie><value>20080621-10:36:12</value></kiddie></root>'
         xml = objectify.fromstring(xml_string)
-        field = xml_models.DateField(xpath='/root/kiddie/value', date_format="%Y%m%d-%H:%M:%S")
+        field = xml_models2.DateField(xpath='/root/kiddie/value', date_format="%Y%m%d-%H:%M:%S")
         response = field.parse(xml, None)
         date = datetime.datetime(2008, 6, 21, 10, 36, 12)
         self.assertEquals(date, response)
 
 
 class OneToOneFieldTests(unittest.TestCase):
-    class SubModel(xml_models.Model):
-        name = xml_models.CharField(xpath='/sub/name')
+    class SubModel(xml_models2.Model):
+        name = xml_models2.CharField(xpath='/sub/name')
 
     def test_returns_sub_component(self):
         xml_string = "<master><sub><name>fred</name></sub></master>"
         xml = objectify.fromstring(xml_string)
-        field = xml_models.OneToOneField(OneToOneFieldTests.SubModel, xpath='/master/sub')
+        field = xml_models2.OneToOneField(OneToOneFieldTests.SubModel, xpath='/master/sub')
         response = field.parse(xml, None)
         self.assertTrue(isinstance(response, OneToOneFieldTests.SubModel))
         self.assertEquals("fred", response.name)
@@ -178,7 +178,7 @@ class OneToOneFieldTests(unittest.TestCase):
     def test_throws_when_more_than_one(self):
         xml_string = "<master><sub><name>fred</name></sub><sub><name>jill</name></sub></master>"
         xml = objectify.fromstring(xml_string)
-        field = xml_models.OneToOneField(OneToOneFieldTests.SubModel, xpath='/master/sub')
+        field = xml_models2.OneToOneField(OneToOneFieldTests.SubModel, xpath='/master/sub')
         with self.assertRaises(MultipleNodesReturnedException):
             field.parse(xml, None)
 
@@ -186,26 +186,26 @@ class OneToOneFieldTests(unittest.TestCase):
         xml_string = "<master></master>"
         xml = objectify.fromstring(xml_string)
 
-        field = xml_models.OneToOneField(OneToOneFieldTests.SubModel, xpath='/master/sub')
+        field = xml_models2.OneToOneField(OneToOneFieldTests.SubModel, xpath='/master/sub')
         response = field.parse(xml, None)
         self.assertIsNone(response)
 
         default = OneToOneFieldTests.SubModel()
-        field = xml_models.OneToOneField(OneToOneFieldTests.SubModel, xpath='/master/sub',
+        field = xml_models2.OneToOneField(OneToOneFieldTests.SubModel, xpath='/master/sub',
                                          default=default)
         response = field.parse(xml, None)
         self.assertEqual(default, response)
 
 
 class CollectionFieldTests(unittest.TestCase):
-    class SubModel(xml_models.Model):
-        name = xml_models.CharField(xpath='/sub/name')
+    class SubModel(xml_models2.Model):
+        name = xml_models2.CharField(xpath='/sub/name')
 
     def test_returns_expected_number_of_correctly_typed_results(self):
         xml_string = '<master><sub><name>fred</name></sub><sub><name>jill</name></sub></master>'
         xml = objectify.fromstring(xml_string)
 
-        field = xml_models.CollectionField(CollectionFieldTests.SubModel, xpath='/master/sub')
+        field = xml_models2.CollectionField(CollectionFieldTests.SubModel, xpath='/master/sub')
         response = field.parse(xml, None)
 
         self.assertEqual(2, len(response))
@@ -216,7 +216,7 @@ class CollectionFieldTests(unittest.TestCase):
         xml_string = '<master><sub><name>fred</name></sub><sub><name>jill</name></sub><sub><name>alice</name></sub></master>'
         xml = objectify.fromstring(xml_string)
 
-        field = xml_models.CollectionField(CollectionFieldTests.SubModel, xpath='/master/sub', order_by='not_real')
+        field = xml_models2.CollectionField(CollectionFieldTests.SubModel, xpath='/master/sub', order_by='not_real')
         with self.assertRaises(AttributeError):
             field.parse(xml, None)
 
@@ -224,7 +224,7 @@ class CollectionFieldTests(unittest.TestCase):
         xml_string = '<master><sub><name>fred</name></sub><sub><name>jill</name></sub><sub><name>alice</name></sub></master>'
         xml = objectify.fromstring(xml_string)
 
-        field = xml_models.CollectionField(CollectionFieldTests.SubModel, xpath='/master/sub', order_by='name')
+        field = xml_models2.CollectionField(CollectionFieldTests.SubModel, xpath='/master/sub', order_by='name')
         response = field.parse(xml, None)
 
         self.assertEqual(3, len(response))
@@ -234,7 +234,7 @@ class CollectionFieldTests(unittest.TestCase):
         xml_string = '<master></master>'
         xml = objectify.fromstring(xml_string)
 
-        field = xml_models.CollectionField(CollectionFieldTests.SubModel, xpath='/master/sub', order_by='name')
+        field = xml_models2.CollectionField(CollectionFieldTests.SubModel, xpath='/master/sub', order_by='name')
         response = field.parse(xml, None)
 
         self.assertEqual([], response)
@@ -317,14 +317,14 @@ class CollectionFieldTests(unittest.TestCase):
 #                 (muppet_name,): "http://foo.com/muppets/%s"
 #               }
 
-class NsModel(xml_models.Model):
+class NsModel(xml_models2.Model):
     namespace = 'urn:test:namespace'
-    name = xml_models.CharField(xpath='/root/name')
-    age = xml_models.IntField(xpath='/root/age')
+    name = xml_models2.CharField(xpath='/root/name')
+    age = xml_models2.IntField(xpath='/root/age')
 
 
-class Simple(xml_models.Model):
-    field1 = xml_models.CharField(xpath='/root/field1')
+class Simple(xml_models2.Model):
+    field1 = xml_models2.CharField(xpath='/root/field1')
 
     finders = {
         (field1,): "http://foo.com/simple/%s"
@@ -332,8 +332,8 @@ class Simple(xml_models.Model):
     headers = {'user': 'user1', 'password': 'pwd1'}
 
 
-class SimpleWithoutFinder(xml_models.Model):
-    field1 = xml_models.CharField(xpath='/root/field1')
+class SimpleWithoutFinder(xml_models2.Model):
+    field1 = xml_models2.CharField(xpath='/root/field1')
 
 
 def main():

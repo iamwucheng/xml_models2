@@ -1,7 +1,7 @@
 from __future__ import absolute_import
-import xml_models.rest_client as rest_client
+import xml_models2.rest_client as rest_client
 from lxml import etree
-from xml_models.xpath_finder import MultipleNodesReturnedException
+from xml_models2.xpath_finder import MultipleNodesReturnedException
 
 
 class ModelManager(object):
