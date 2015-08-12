@@ -207,6 +207,9 @@ class ModelBase(type):
     """
 
     def __new__(mcs, name, bases, attrs):
+        if name == 'Model':
+            return type.__new__(mcs, name, bases, attrs)
+
         new_class = super(ModelBase, mcs).__new__(mcs, name, bases, attrs)
         xml_fields = [field_name for field_name in attrs.keys() if isinstance(attrs[field_name], BaseField)]
         setattr(new_class, 'xml_fields', xml_fields)
