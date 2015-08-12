@@ -224,7 +224,7 @@ class ModelBase(type):
             setattr(new_class.objects, "headers", attrs["headers"])
         return new_class
 
-    def _get_xpath(cls, field_impl):
+    def _get_xpath(self, field_impl):
         return property(fget=lambda self: self._parse_field(field_impl),
                         fset=lambda self, value: self._set_value(field_impl, value))
 
