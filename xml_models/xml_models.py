@@ -225,8 +225,8 @@ class ModelBase(type):
         return new_class
 
     def _get_xpath(cls, field_impl):
-        return property(fget=lambda cls: cls._parse_field(field_impl),
-                        fset=lambda cls, value: cls._set_value(field_impl, value))
+        return property(fget=lambda self: self._parse_field(field_impl),
+                        fset=lambda self, value: self._set_value(field_impl, value))
 
 
 from future.utils import with_metaclass
