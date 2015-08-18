@@ -295,8 +295,7 @@ class Model(with_metaclass(ModelBase)):
         xpath = "/".join(parts[:-1])  # I think it is safe to assume attributes are in the last place
         attr = parts[-1].replace('@', '')
 
-        if attr in self._get_tree().xpath(xpath)[0].attrib:
-            self._get_tree().xpath(xpath)[0].attrib[attr] = str(getattr(self, field._name))
+        self._get_tree().xpath(xpath)[0].attrib[attr] = str(getattr(self, field._name))
 
     def _update_subtree(self, field):
         """
