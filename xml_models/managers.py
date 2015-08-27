@@ -2,7 +2,10 @@ from __future__ import absolute_import
 import xml_models.rest_client as rest_client
 from lxml import etree
 from xml_models.xpath_finder import MultipleNodesReturnedException
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 
 class ModelManager(object):
