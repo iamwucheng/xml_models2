@@ -17,7 +17,7 @@ setup(
     author='Geoff Ford and Chris Tarttelin and Cam McHugh',
     author_email='g_ford@hotmail.ccom',
     url='http://github.com/alephnullplex/xml_models',
-    packages=['xml_models2', 'xml_models2.rest_client'],
+    packages=['xml_models2'],
     install_requires=['lxml', 'python-dateutil', 'pytz', 'future', 'requests'],
     tests_require=['mock', 'nose', 'coverage'],
     test_suite="nose.collector"
